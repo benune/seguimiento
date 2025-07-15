@@ -101,7 +101,7 @@ section h2 {
     font-size: 1.875rem; /* text-3xl */
     font-weight: 700; /* font-bold */
     color: var(--primary-color);
-    border-bottom: 2px solid var(--blue-300); /* border-b-2 border-blue-300 */
+    border-bottom: 2px solid #93c5fd; /* border-b-2 border-blue-300 */
     padding-bottom: 0.75rem; /* pb-3 */
     margin-bottom: 1.5rem; /* mb-6 */
 }
@@ -201,7 +201,7 @@ section h2 {
 
 /* Diagrama de Gantt */
 .gantt-container {
-    overflow-x: auto;
+    overflow-x: auto; /* Esto es crucial para el desplazamiento horizontal */
     border: 1px solid var(--border-color);
     border-radius: 0.5rem; /* rounded-lg */
     background-color: white;
@@ -212,13 +212,13 @@ section h2 {
 .gantt-grid {
     display: grid;
     gap: 1px; /* gap-px */
-    background-color: #d1d5db; /* gray-300 */
+    background-color: #d1d5db; /* gray-300 para las líneas de la cuadrícula */
     /* grid-template-columns se establecerá en JS */
-    min-width: fit-content; /* Asegura que el contenido no se desborde */
+    min-width: fit-content; /* Permite que el grid se expanda más allá del contenedor si es necesario para el scroll */
 }
 
-.gantt-header > div,
-.gantt-row > div {
+/* Estilo para todas las celdas del grid (encabezado y datos) */
+.gantt-grid > div {
     background-color: white;
     padding: 0.5rem;
     text-align: center;
@@ -227,43 +227,58 @@ section h2 {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho/alto total */
 }
 
-.gantt-header > div:first-child {
-    text-align: left;
+/* Estilos específicos para las celdas del encabezado */
+.gantt-grid > div.header-cell {
     font-weight: bold;
-    position: sticky;
-    left: 0;
-    z-index: 10;
 }
 
-.gantt-row > div:first-child {
-    text-align: left;
+/* Columna de nombre de tarea (pegajosa) */
+.gantt-grid > div.sticky-col {
     position: sticky;
     left: 0;
-    z-index: 5;
+    z-index: 10; /* Mayor z-index para que se superponga */
+    background-color: white; /* Asegura un fondo sólido cuando es pegajoso */
+    text-align: left; /* Alinea los nombres de las tareas a la izquierda */
 }
 
+/* Fila de encabezado (pegajosa) */
+.gantt-grid > div.sticky-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 10; /* Mayor z-index para el encabezado pegajoso */
+    background-color: white; /* Asegura un fondo sólido cuando es pegajoso */
+}
+
+/* Celda superior izquierda (esquina) */
+.gantt-grid > div.sticky-col.sticky-header-row {
+    z-index: 20; /* El z-index más alto para la esquina */
+}
+
+/* Remover el borde derecho de las últimas celdas de cada fila para evitar dobles bordes */
+/* Esto se maneja mejor si cada "fila" es un elemento de grid y sus hijos son las celdas,
+   pero con el enfoque actual de todas las celdas como hijos directos, es más complejo.
+   Mantendremos los bordes en todas las celdas para simplicidad y consistencia. */
+
+/* Estilos de la barra de Gantt */
 .gantt-bar-cell {
-    background-color: #f9fafb; /* gray-50 */
-    padding: 0.25rem; /* p-1 */
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
 }
 
 .gantt-bar {
     height: 1rem; /* h-4 */
     border-radius: 0.125rem; /* rounded-sm */
-    width: 100%; /* w-full */
+    width: 100%; /* La barra ocupa todo el ancho de su celda */
     transition: background-color 0.3s ease;
 }
 
 /* Colores de las barras de Gantt */
 .gantt-bar.completed {
-    background-color: #166534; /* dark green */
+    background-color: #166534; /* verde oscuro */
 }
 
 .gantt-bar.in-progress {
