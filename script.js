@@ -181,8 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const overallProgressFill = document.getElementById('overall-progress-fill');
     const overallProgressPercentage = document.getElementById('overall-progress-percentage');
     const ganttChartGrid = document.getElementById('gantt-chart');
-    const ganttHeader = ganttChartGrid.querySelector('.gantt-header');
-    const ganttBody = document.getElementById('gantt-body');
+    // Eliminamos ganttHeader y ganttBody ya que todas las celdas serán hijos directos de ganttChartGrid
 
     // Función para cargar el progreso desde localStorage
     function loadProgress() {
@@ -309,38 +308,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para renderizar el diagrama de Gantt simple
     function renderGanttChart() {
-        ganttBody.innerHTML = ''; // Limpiar el cuerpo del Gantt
+        ganttChartGrid.innerHTML = ''; // Limpiar todo el contenido del Gantt
 
         const totalDays = 15; // Días totales en el Gantt
         const startDate = new Date('2025-07-14'); // Fecha de inicio para el display
 
-        // Configurar las columnas del grid para el Gantt (si no están ya configuradas)
-        // La primera columna es para el nombre de la tarea, las siguientes para los días
+        // Configurar las columnas del grid para el contenedor principal del Gantt
         ganttChartGrid.style.gridTemplateColumns = `200px repeat(${totalDays}, minmax(50px, 1fr))`;
 
-        // Crear los encabezados de fecha si no existen
-        if (ganttHeader.children.length === 1) { // Solo si 'Tarea' es el único hijo
-            for (let i = 0; i < totalDays; i++) {
-                const currentDate = new Date(startDate);
-                currentDate.setDate(startDate.getDate() + i);
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'bg-white p-2 text-center font-bold border-b border-r border-gray-200';
-                dayDiv.textContent = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`; // Día/Mes
-                ganttHeader.appendChild(dayDiv);
-            }
+        // --- Crear Fila de Encabezado ---
+        // Celda superior izquierda: "Tarea"
+        const taskHeaderCell = document.createElement('div');
+        taskHeaderCell.className = 'header-cell sticky-col sticky-header-row';
+        taskHeaderCell.textContent = 'Tarea';
+        ganttChartGrid.appendChild(taskHeaderCell);
+
+        // Celdas de encabezado de fecha
+        for (let i = 0; i < totalDays; i++) {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + i);
+            const dateHeaderCell = document.createElement('div');
+            dateHeaderCell.className = 'header-cell sticky-header-row'; // Hacer que los encabezados de fecha también sean pegajosos
+            dateHeaderCell.textContent = `${currentDate.getDate()}/${currentDate.getMonth() + 1}`; // Día/Mes
+            ganttChartGrid.appendChild(dateHeaderCell);
         }
 
+        // --- Crear Filas del Cuerpo (para cada tarea) ---
         planDeTrabajo.forEach((dayData) => {
             const ganttTask = dayData.ganttTask;
             if (!ganttTask) return;
 
-            const row = document.createElement('div');
-            row.className = 'gantt-row';
-
+            // Celda del nombre de la tarea (pegajosa)
             const taskNameCell = document.createElement('div');
-            taskNameCell.className = 'bg-white p-2 text-left border-r border-b border-gray-200 sticky left-0 z-5';
+            taskNameCell.className = 'sticky-col';
             taskNameCell.textContent = ganttTask.name;
-            row.appendChild(taskNameCell);
+            ganttChartGrid.appendChild(taskNameCell);
 
             // Calcular el progreso de la tarea del Gantt (basado en las acciones del día)
             const relevantActions = dayData.actions || [];
@@ -348,9 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalSubActions = relevantActions.length;
             const taskProgress = totalSubActions > 0 ? (completedSubActions / totalSubActions) * 100 : 0;
 
+            // Celdas de la barra de Gantt para cada día
             for (let i = 1; i <= totalDays; i++) { // Iterar por cada día en el Gantt
                 const cell = document.createElement('div');
-                cell.className = 'gantt-bar-cell'; // Clase para la celda que contiene la barra
+                cell.className = 'gantt-bar-cell';
 
                 if (i >= ganttTask.startDay && i <= ganttTask.endDay) {
                     const bar = document.createElement('div');
@@ -364,22 +367,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         bar.classList.add('not-started');
                     }
                     
-                    // Ajustar el ancho de la barra para simular el progreso
-                    // Nota: En este Gantt simple, la barra ocupa toda la celda si la tarea está en ese día.
-                    // El "progreso" se refleja en el color. Si quisieras una barra que se "rellena",
-                    // la celda debería tener un ancho fijo y la barra un ancho porcentual.
-                    // Aquí, el width del div 'gantt-bar' ya es 100% de su celda, el color indica el progreso.
-                    // Para una barra que se "llena", se podría hacer:
-                    // bar.style.width = `${taskProgress}%`;
-                    // Y la celda debería tener un ancho fijo para que esto sea visible.
-                    // Por simplicidad y consistencia visual con el React, solo el color cambia.
-                    
                     bar.title = `${ganttTask.name}: ${taskProgress.toFixed(0)}% completado`;
                     cell.appendChild(bar);
                 }
-                row.appendChild(cell);
+                ganttChartGrid.appendChild(cell);
             }
-            ganttBody.appendChild(row);
         });
     }
 
