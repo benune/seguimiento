@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento Plan de Curso: Intervención Didáctica Pedagógica</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1 class="text-4xl font-extrabold mb-2">Plan de Trabajo: Preparación del Curso</h1>
+        <h2 class="text-2xl font-semibold mb-6">"Intervención Didáctica Pedagógica del Trabajo Docente"</h2>
+        <div class="progress-bar-container">
+            <h3 class="text-lg font-medium mb-2">Progreso General del Plan: <span id="overall-progress-percentage" class="font-bold text-green-300">0%</span></h3>
+            <div class="progress-bar">
+                <div id="overall-progress-fill" class="progress-fill"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="daily-tasks-section">
+            <h2 class="text-3xl font-bold text-blue-700 border-b-2 border-blue-300 pb-3 mb-6">Tareas por Día</h2>
+            <div id="daily-cards-container" class="daily-cards-grid">
+                <!-- Las tarjetas de tareas se generarán aquí con JavaScript -->
+            </div>
+        </section>
+
+        <section id="gantt-chart-section">
+            <h2 class="text-3xl font-bold text-blue-700 border-b-2 border-blue-300 pb-3 mb-6">Diagrama de Gantt</h2>
+            <div class="gantt-container">
+                <div id="gantt-chart" class="gantt-grid">
+                    <!-- El encabezado y el cuerpo del Gantt se generarán con JavaScript -->
+                    <div class="gantt-header">
+                        <div class="gantt-task-col">Tarea</div>
+                        <!-- Fechas dinámicas se insertarán aquí por JS -->
+                    </div>
+                    <div id="gantt-body">
+                        <!-- Las filas de tareas se generarán aquí por JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p class="text-sm">&copy; 2025 Seguimiento de Plan Educativo</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
